@@ -34,4 +34,18 @@ public class RunnerService {
     public Runner create(Runner runner) {
         return runnerRepository.save(runner);
     }
+
+    public void delete(Long id) {
+        Runner runner = getById(id);
+        runnerRepository.delete(runner);
+    }
+
+    public Runner update(Long id, Runner runner) {
+        Runner existingRunner = getById(id);
+        existingRunner.setFirstName(runner.getFirstName());
+        existingRunner.setLastName(runner.getLastName());
+        existingRunner.setEmail(runner.getEmail());
+        existingRunner.setAge(runner.getAge());
+        return runnerRepository.save(existingRunner);
+    }
 }
