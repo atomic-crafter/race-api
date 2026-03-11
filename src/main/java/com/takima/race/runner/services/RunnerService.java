@@ -6,16 +6,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.takima.race.runner.entities.Race;
 import com.takima.race.runner.entities.Runner;
+import com.takima.race.runner.repositories.RaceRepository;
 import com.takima.race.runner.repositories.RunnerRepository;
 
 @Service
 public class RunnerService {
 
     private final RunnerRepository runnerRepository;
+    private final RaceRepository raceRepository;
 
-    public RunnerService(RunnerRepository runnerRepository) {
+    public RunnerService(RunnerRepository runnerRepository, RaceRepository raceRepository) {
         this.runnerRepository = runnerRepository;
+        this.raceRepository = raceRepository;
     }
 
     public List<Runner> getAll() {
@@ -47,5 +51,10 @@ public class RunnerService {
         existingRunner.setEmail(runner.getEmail());
         existingRunner.setAge(runner.getAge());
         return runnerRepository.save(existingRunner);
+    }
+
+    public List<Race> getRaces(Long id) { 
+        getById(id);
+        return raceRepository.findByRunnerId(id);
     }
 }

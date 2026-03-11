@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.takima.race.runner.entities.Runner;
 import com.takima.race.runner.services.RunnerService;
+import com.takima.race.runner.entities.Race;
 
 @RestController
 @RequestMapping("/runners")
@@ -46,5 +47,10 @@ public class RunnerController {
     @PutMapping("/{id}")
     public Runner update(@PathVariable Long id, @RequestBody Runner runner) {
         return runnerService.update(id, runner);
+    }
+
+    @GetMapping("/{id}/races")
+    public List<Race> getRaces(@PathVariable Long id) {
+        return runnerService.getRaces(id);
     }
 }
