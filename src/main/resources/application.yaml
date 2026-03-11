@@ -2,7 +2,7 @@ spring:
   application:
     name: race
   datasource:
-    url: jdbc:postgresql://localhost:5432/race_db
+    url: jdbc:postgresql://localhost:5433/race_db
     username: race
     password: race
   jpa:
