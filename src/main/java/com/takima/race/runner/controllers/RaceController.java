@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.takima.race.runner.entities.Race;
 import com.takima.race.runner.services.RaceService;
+import com.takima.race.runner.entities.Registration;
+import com.takima.race.runner.repositories.RunnerRepository;
 
 
 
@@ -20,9 +22,11 @@ import com.takima.race.runner.services.RaceService;
 public class RaceController {
 
     private final RaceService raceService;
+    private final RunnerRepository runnerRepository;
 
-    public RaceController(RaceService raceService) {
+    public RaceController(RaceService raceService, RunnerRepository runnerRepository) {
         this.raceService = raceService;
+        this.runnerRepository = runnerRepository;
     }
 
     @GetMapping
@@ -50,4 +54,17 @@ public class RaceController {
         return raceService.getParticipants(id).size();
     }
 
+
+    @GetMapping("/{id}/registrations")
+    public List<Registration> getRegistrations(@PathVariable Long id) {
+        return raceService.getRegistrations(id);
+    }
+
+    @PostMapping("/{id}/registrations")
+    public Registration createRegistration(@PathVariable Long id, @RequestBody Long runnerId) {
+        Registration registration = new Registration();
+        registration.setRunner(runnerRepository.findById(runnerId).orElseThrow());
+        registration.setRace(raceService.getById(id));
+        return raceService.createRegistration(registration);
+    }
 }
