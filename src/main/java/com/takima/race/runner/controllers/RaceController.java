@@ -21,6 +21,8 @@ import com.takima.race.runner.repositories.RunnerRepository;
 @RequestMapping("/races")
 public class RaceController {
 
+    record RegistrationRequest(Long runnerId) {}
+
     private final RaceService raceService;
     private final RunnerRepository runnerRepository;
 
@@ -61,9 +63,9 @@ public class RaceController {
     }
 
     @PostMapping("/{id}/registrations")
-    public Registration createRegistration(@PathVariable Long id, @RequestBody Long runnerId) {
+    public Registration createRegistration(@PathVariable Long id, @RequestBody RegistrationRequest body) {
         Registration registration = new Registration();
-        registration.setRunner(runnerRepository.findById(runnerId).orElseThrow());
+        registration.setRunner(runnerRepository.findById(body.runnerId()).orElseThrow());
         registration.setRace(raceService.getById(id));
         registration.setRegistrationDate(java.time.LocalDate.now());
         return raceService.createRegistration(registration);
