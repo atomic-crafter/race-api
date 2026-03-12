@@ -65,6 +65,7 @@ public class RaceController {
         Registration registration = new Registration();
         registration.setRunner(runnerRepository.findById(runnerId).orElseThrow());
         registration.setRace(raceService.getById(id));
+        registration.setRegistrationDate(java.time.LocalDate.now());
         return raceService.createRegistration(registration);
     }
 }
