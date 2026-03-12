@@ -1,13 +1,35 @@
 package com.takima.race.runner.entities;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.Objects;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Race {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private java.util.Date date;
+    private LocalDate date;
     private String location;
     private int maxParticipants;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Race race = (Race) o;
+        return Objects.equals(id, race.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 
     public Long getId() {
         return id;
@@ -25,11 +47,11 @@ public class Race {
         this.name = name;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
