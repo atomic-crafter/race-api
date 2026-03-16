@@ -2,6 +2,7 @@ package com.takima.race.runner.controllers;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,11 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.takima.race.runner.entities.Race;
 import com.takima.race.runner.entities.Runner;
 import com.takima.race.runner.services.RunnerService;
-import com.takima.race.runner.entities.Race;
 
 @RestController
 @RequestMapping("/runners")
@@ -35,6 +37,7 @@ public class RunnerController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Runner create(@RequestBody Runner runner) {
         return runnerService.create(runner);
     }
@@ -45,12 +48,13 @@ public class RunnerController {
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
     public Runner update(@PathVariable Long id, @RequestBody Runner runner) {
         return runnerService.update(id, runner);
     }
 
-    @GetMapping("/{id}/races")
-    public List<Race> getRaces(@PathVariable Long id) {
-        return runnerService.getRaces(id);
+    @GetMapping("/{runnerId}/races")
+    public List<Race> getRaces(@PathVariable Long runnerId) {
+        return runnerService.getRaces(runnerId);
     }
 }

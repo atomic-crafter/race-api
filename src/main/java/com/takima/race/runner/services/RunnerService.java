@@ -36,6 +36,7 @@ public class RunnerService {
     }
 
     public Runner create(Runner runner) {
+        validateEmail(runner.getEmail());
         return runnerRepository.save(runner);
     }
 
@@ -46,6 +47,7 @@ public class RunnerService {
 
     public Runner update(Long id, Runner runner) {
         Runner existingRunner = getById(id);
+        validateEmail(runner.getEmail());
         existingRunner.setFirstName(runner.getFirstName());
         existingRunner.setLastName(runner.getLastName());
         existingRunner.setEmail(runner.getEmail());
@@ -56,5 +58,14 @@ public class RunnerService {
     public List<Race> getRaces(Long id) { 
         getById(id);
         return raceRepository.findByRunnerId(id);
+    }
+
+    private void validateEmail(String email) {
+        if (email == null || !email.contains("@")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Runner email is invalid"
+            );
+        }
     }
 }

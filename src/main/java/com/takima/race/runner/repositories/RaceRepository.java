@@ -11,6 +11,8 @@ import com.takima.race.runner.entities.Race;
 
 @Repository
 public interface RaceRepository extends JpaRepository<Race, Long> {
+    List<Race> findByLocation(String location);
+
     @Query(value = """
             SELECT ra.*
             FROM race ra

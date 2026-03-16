@@ -2,18 +2,20 @@ package com.takima.race.runner.controllers;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.takima.race.runner.entities.Race;
-import com.takima.race.runner.services.RaceService;
 import com.takima.race.runner.entities.Registration;
-import com.takima.race.runner.repositories.RunnerRepository;
+import com.takima.race.runner.services.RaceService;
 
 
 
@@ -21,19 +23,18 @@ import com.takima.race.runner.repositories.RunnerRepository;
 @RequestMapping("/races")
 public class RaceController {
 
-    record RegistrationRequest(Long runnerId) {}
+    public record RegistrationRequest(Long runnerId) {}
+    public record ParticipantCountResponse(long count) {}
 
     private final RaceService raceService;
-    private final RunnerRepository runnerRepository;
 
-    public RaceController(RaceService raceService, RunnerRepository runnerRepository) {
+    public RaceController(RaceService raceService) {
         this.raceService = raceService;
-        this.runnerRepository = runnerRepository;
     }
 
     @GetMapping
-    public List<Race> getAll() {
-        return raceService.getAllRaces();
+    public List<Race> getAll(@RequestParam(required = false) String location) {
+        return raceService.getAllRaces(location);
     }
 
     @GetMapping("/{id}")
@@ -47,13 +48,14 @@ public class RaceController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Race create(@RequestBody Race race) {
         return raceService.create(race);
     }
 
     @GetMapping("/{id}/participants/count")
-    public int getParticipantsCount(@PathVariable Long id) {
-        return raceService.getParticipants(id).size();
+    public ParticipantCountResponse getParticipantsCount(@PathVariable Long id) {
+        return new ParticipantCountResponse(raceService.getParticipantsCount(id));
     }
 
 
@@ -62,12 +64,9 @@ public class RaceController {
         return raceService.getRegistrations(id);
     }
 
-    @PostMapping("/{id}/registrations")
-    public Registration createRegistration(@PathVariable Long id, @RequestBody RegistrationRequest body) {
-        Registration registration = new Registration();
-        registration.setRunner(runnerRepository.findById(body.runnerId()).orElseThrow());
-        registration.setRace(raceService.getById(id));
-        registration.setRegistrationDate(java.time.LocalDate.now());
-        return raceService.createRegistration(registration);
+    @PostMapping("/{raceId}/registrations")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Registration createRegistration(@PathVariable Long raceId, @RequestBody RegistrationRequest body) {
+        return raceService.createRegistration(raceId, body.runnerId());
     }
 }
